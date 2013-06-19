@@ -4,7 +4,7 @@
 
 * Requires `Nginx >= 1.3.1` for websocket forwarding to work.
 	1. Since nginx package from official debian repository is only version `1.2.1`, use packages from nginx instead.
-	2. To add following two lines into /etc/apt/sources.list
+	2. To add following two lines into `/etc/apt/sources.list` (If you are using debian 7. Change `wheezy` accordingly if you are using different version of debian)
 		* `deb http://nginx.org/packages/debian/ wheezy nginx`
 		* `deb-src http://nginx.org/packages/debian/ wheezy nginx`
 	3. Download and add nginx package pgp signing key
