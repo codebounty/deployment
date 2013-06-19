@@ -1,3 +1,0 @@
-[submodule "server/node-init"]
-	path = server/node-init
-	url = git@github.com:kevinxucs/node-monit.git
