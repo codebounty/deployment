@@ -1,0 +1,3 @@
+check process bitcoind with pidfile /var/run/bitcoind.pid
+	start program = "/etc/init.d/bitcoind start"
+	stop program  = "/etc/init.d/bitcoind stop"
