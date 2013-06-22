@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# Script for updating codebounty server side settings.json.
+# Script for updating codebounty server side settings.json
 #
 # Usage: update-settings.sh [file]
 #
@@ -11,5 +11,4 @@
 usage() {
     echo "Usage: $0 [file]"
 }
-
 
