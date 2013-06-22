@@ -8,5 +8,7 @@ CB_SSH_PORT="22"
 CB_USER="codebounty"
 CB_ROOT="/srv/codebounty"   # Server directory root
 
+VERBOSE=false   # Extra output
+
 # DO NOT EDIT BELOW
 ME=`basename $0`

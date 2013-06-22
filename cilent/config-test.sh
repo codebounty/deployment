@@ -22,7 +22,7 @@ test_config_ssh() {
     [ ! -f "$CB_SSH" ] && _error_not_found "$ME" "$CB_SSH"
 
     _PASS_SSH=true
-    echo "test_config_ssh passed"
+    if $VERBOSE; then echo "test_config_ssh passed"; fi
 }
 
 test_config_scp() {
@@ -32,7 +32,7 @@ test_config_scp() {
     [ ! -f "$CB_SCP" ] && _error_not_found "$ME" "$CB_SCP"
 
     _PASS_SCP=true
-    echo "test_config_scp passed"
+    if $VERBOSE; then echo "test_config_scp passed"; fi
 }
 
 test_config_remote() {
@@ -49,7 +49,7 @@ test_config_remote() {
     [ ! $? -eq 0 ] && { echo "$ME: $CB_USER@$CB_REMOTE:$CB_SSH_PORT not accessible via ssh"; exit 2; }
 
     _PASS_REMOTE=true
-    echo "test_config_remote passed"
+    if $VERBOSE; then echo "test_config_remote passed"; fi
 }
 
 test_config_root() {
@@ -65,7 +65,7 @@ test_config_root() {
         && _error_not_found "$ME" "$CB_ROOT"
 
     _PASS_ROOT=true
-    echo "test_config_root passed"
+    if $VERBOSE; then echo "test_config_root passed"; fi
 }
 
 test_config_all() {
