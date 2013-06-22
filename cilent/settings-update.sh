@@ -11,11 +11,12 @@
 test_config_all
 
 usage() {
-    echo "Usage: $0 [file]"
+    echo "Usage: $ME [file]"
+    exit 3
 }
 
 # Check argument
-[ -z "$1" ] && { usage; exit 3; }
-[ ! -f "$1" ] && { echo "$0: $1 not found"; exit 2; }
+[ -z "$1" ] && usage
+[ ! -f "$1" ] && { echo "$ME: $1 not found"; exit 2; }
 
 # Upload settings file
