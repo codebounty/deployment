@@ -1,6 +1,6 @@
 # Global configuration file
 
-SSH="/usr/bin/ssh"
-SCP="/usr/bin/scp"
-REMOTE="app.codebounty.co"
-PORT="22"
+CB_SSH="/usr/bin/ssh"
+CB_SCP="/usr/bin/scp"
+CB_REMOTE="app.codebounty.co"
+CB_SSH_PORT="22"
