@@ -35,7 +35,8 @@ usage() {
 if $VERBOSE; then echo "Uploading $1 to $SETTINGS_PATH on server..."; fi
 cb_scp_upload "$1" "$SETTINGS_PATH"
 
-if $VERBOSE; then echo "Changing permission of $SETTINGS_PATH..."; fi
+if $VERBOSE; then echo "Changing ownership and permission of $SETTINGS_PATH..."; fi
+cb_admin_ssh "sudo" "chown" "$CB_USER:$CB_GROUP" "$SETTINGS_PATH"    # Ensure setting file ownership
 cb_ssh "chmod" "$SETTINGS_PERMISSION" "$SETTINGS_PATH"
 
 # Restart server
