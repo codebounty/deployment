@@ -1,6 +1,7 @@
 # Helper script for ssh related operations
 #
 # Author: Kaiwen Xu <kevin@kevxu.net>
+#
 
 cb_scp() {
     if $VERBOSE; then

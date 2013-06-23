@@ -1,6 +1,7 @@
 # Helper script for validating configuration file
 #
 # Author: Kaiwen Xu <kevin@kevxu.net>
+#
 
 _PASS_SSH=false
 _PASS_SCP=false
