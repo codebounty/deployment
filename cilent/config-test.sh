@@ -1,8 +1,11 @@
 # Helper script for validating configuration file
+#
+# Author: Kaiwen Xu <kevin@kevxu.net>
 
 _PASS_SSH=false
 _PASS_SCP=false
 _PASS_REMOTE=false
+_PASS_GROUP=false
 _PASS_ROOT=false
 
 _error_not_set() {
@@ -52,6 +55,24 @@ test_config_remote() {
     if $VERBOSE; then echo "test_config_remote passed"; fi
 }
 
+test_config_group() {
+    if $_PASS_GROUP; then return 0; fi
+
+    [ -z "$CB_GROUP" ] && _error_not_set "$ME" "CB_GROUP"
+
+    # Grep group using ssh
+    test_config_ssh
+    test_config_remote
+    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "grep $CB_GROUP /etc/group >/dev/null" \
+
+    if [ ! $? -eq 0 ]; then
+        _error_not_found "$ME" "Group $CB_GROUP"
+    fi
+
+    _PASS_GROUP=true
+    if $VERBOSE; then echo "test_config_group passed"; fi
+}
+
 test_config_root() {
     if $_PASS_ROOT; then return 0; fi
 
@@ -60,7 +81,6 @@ test_config_root() {
     # Test folder existence using ssh
     test_config_ssh
     test_config_remote
-
     "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "[ ! -d $CB_ROOT ]" \
         && _error_not_found "$ME" "$CB_ROOT"
 
@@ -72,5 +92,6 @@ test_config_all() {
     test_config_ssh
     test_config_scp
     test_config_remote
+    test_config_group
     test_config_root
 }
