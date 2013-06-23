@@ -1,0 +1,15 @@
+#! /bin/sh
+#
+# A post-receive script which creates a meteor bundle which runs on node.js
+# server
+#
+# Author: Kaiwen Xu <kevxu.net>
+#
+
+NODE_PATH="/opt/node/default/bin"
+MRT="$NODE_PATH/mrt"
+ROOT="/srv/codebounty"
+
+oldrev=$(git rev-parse $1)
+newrev=$(git rev-parse $2)
+refname="$3"
