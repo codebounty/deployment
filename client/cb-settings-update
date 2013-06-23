@@ -24,13 +24,13 @@ SETTINGS_PATH="$CB_ROOT/$SETTINGS_FILE"
 SETTINGS_PERMISSION="0600"
 
 usage() {
-    echo "Usage: $ME [file]" >&2
+    echo >&2 "Usage: $ME [file]"
     exit 3
 }
 
 # Check argument
 [ -z "$1" ] && usage
-[ ! -f "$1" ] && { echo "$ME: $1 not found" >&2; exit 2; }
+[ ! -f "$1" ] && { echo >&2 "$ME: $1 not found"; exit 2; }
 
 # Upload settings file
 if $VERBOSE; then echo "Uploading $1 to $SETTINGS_PATH on server..."; fi

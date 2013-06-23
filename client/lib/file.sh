@@ -21,7 +21,7 @@ cb_verify_file() {
     if [ "$LOCAL_FILE_CHECKSUM" == "$REMOTE_FILE_CHECKSUM" ]; then
         return 0
     else
-        echo "Local file $LOCAL_FILE doesn't match with remote file $REMOTE_FILE" >&2
+        echo >&2 "Local file $LOCAL_FILE doesn't match with remote file $REMOTE_FILE"
         return 1
     fi
 }
