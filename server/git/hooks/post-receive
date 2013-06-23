@@ -9,6 +9,7 @@
 NODE_PATH="/opt/node/default/bin"
 PATH="$PATH:$NODE_PATH"; export PATH
 MRT="$NODE_PATH/mrt"
+METEOR="$HOME/.meteor/meteor"
 ROOT="/srv/codebounty"
 DEST="$ROOT/repo"
 TMP="/tmp"
@@ -129,7 +130,9 @@ generate_bundle() {
     echo "Generating meteor bundle..."
     mkdir -p "$WORKING_DIR/$rev" \
         || { echo >&2 "*** Fail to create $WORKING_DIR/$rev, aborting..."; clean_up; exit 2; }
-    cd "$WORKING_DIR/meteor" && "$MRT" bundle "$WORKING_DIR/$rev/bundle.tar.gz" \
+    cd "$WORKING_DIR/meteor" && "$MRT" install \
+        || { echo >&2 "*** Install meteorite package failed, aborting..."; clean_up; exit 2; }
+    cd "$WORKING_DIR/meteor" && "$METEOR" bundle "$WORKING_DIR/$rev/bundle.tar.gz" \
         || { echo >&2 "*** Generation failed, aborting..."; clean_up; exit 2; }
 
     echo "Extracting bundle..."
