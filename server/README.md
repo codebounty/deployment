@@ -5,7 +5,7 @@
 ## Environment
 
 * Debian 7.1
-* nginx/1.2.1 (web server, official package)
+* nginx/1.4.1 (web server, official package from nginx)
 * node.js/0.8.25 (compiled from source)
 * fail2ban/0.8.6 (basic security util, official package)
 * monit/5.4 (process monitor, official package)
