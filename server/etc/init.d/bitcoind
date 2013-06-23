@@ -16,7 +16,7 @@
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:/home/bitcoind/bin
-DESC="BitCoin Daemon"
+DESC="Bitcoin Daemon"
 NAME=bitcoind
 DAEMON=/home/bitcoind/bin/$NAME
 PIDFILE=/var/run/$NAME.pid
@@ -137,7 +137,7 @@ case "$1" in
         esac
         ;;
       *)
-          # Failed to stop
+        # Failed to stop
         log_end_msg 1
         ;;
     esac
