@@ -8,6 +8,7 @@ _PASS_SCP=false
 _PASS_REMOTE=false
 _PASS_GROUP=false
 _PASS_ROOT=false
+_PASS_REPO=false
 _PASS_ADMIN_USER=false
 _PASS_INIT_SCRIPT=false
 
@@ -37,7 +38,7 @@ test_config_ssh() {
     [ ! -f "$CB_SSH" ] && _error_not_found "$ME" "$CB_SSH"
 
     _PASS_SSH=true
-    if $VERBOSE; then echo "test_config_ssh passed"; fi
+    if $VERBOSE; then echo >&2 "test_config_ssh passed"; fi
 }
 
 test_config_scp() {
@@ -47,7 +48,7 @@ test_config_scp() {
     [ ! -f "$CB_SCP" ] && _error_not_found "$ME" "$CB_SCP"
 
     _PASS_SCP=true
-    if $VERBOSE; then echo "test_config_scp passed"; fi
+    if $VERBOSE; then echo >&2 "test_config_scp passed"; fi
 }
 
 test_config_remote() {
@@ -64,7 +65,7 @@ test_config_remote() {
         || { echo >&2 "$ME: $CB_USER@$CB_REMOTE:$CB_SSH_PORT not accessible"; exit 2; }
 
     _PASS_REMOTE=true
-    if $VERBOSE; then echo "test_config_remote passed"; fi
+    if $VERBOSE; then echo >&2 "test_config_remote passed"; fi
 }
 
 test_config_group() {
@@ -79,7 +80,7 @@ test_config_group() {
         || _error_not_found "$ME" "Group $CB_GROUP"
 
     _PASS_GROUP=true
-    if $VERBOSE; then echo "test_config_group passed"; fi
+    if $VERBOSE; then echo >&2 "test_config_group passed"; fi
 }
 
 test_config_root() {
@@ -94,7 +95,22 @@ test_config_root() {
         && _error_not_found "$ME" "$CB_ROOT" "on server"
 
     _PASS_ROOT=true
-    if $VERBOSE; then echo "test_config_root passed"; fi
+    if $VERBOSE; then echo >&2 "test_config_root passed"; fi
+}
+
+test_config_repo() {
+    if $_PASS_REPO; then return 0; fi
+
+    [ -z "$CB_REPO" ] && _error_not_set "$ME" "CB_REPO"
+
+    # Test folder existence using ssh
+    test_config_ssh
+    test_config_remote
+    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "[ ! -d $CB_REPO ]" \
+        && _error_not_found "$ME" "$CB_REPO" "on server"
+
+    _PASS_REPO=true
+    if $VERBOSE; then echo >&2 "test_config_repo passed"; fi
 }
 
 #
@@ -115,7 +131,7 @@ test_config_admin_user() {
         || { echo >&2 "$ME: $CB_ADMIN_USER@$CB_REMOTE:$CB_SSH_PORT not accessible"; exit 2; }
 
     _PASS_ADMIN_USER=true
-    if $VERBOSE; then echo "test_config_admin_user passed"; fi
+    if $VERBOSE; then echo >&2 "test_config_admin_user passed"; fi
 }
 
 test_config_init_script() {
@@ -128,7 +144,7 @@ test_config_init_script() {
         && _error_not_found "$ME" "$CB_INIT_SCRIPT" "on server"
 
     _PASS_INIT_SCRIPT=true
-    if $VERBOSE; then echo "test_config_init_script passed"; fi
+    if $VERBOSE; then echo >&2 "test_config_init_script passed"; fi
 }
 
 #
@@ -141,6 +157,7 @@ test_config_non_admin() {
     test_config_remote
     test_config_group
     test_config_root
+    test_config_repo
 }
 
 test_config_admin() {

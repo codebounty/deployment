@@ -1,0 +1,22 @@
+#! /bin/sh
+#
+# Script for list all available generated bundles
+#
+# Author: Kaiwen Xu <kevin@kevxu.net>
+#
+# Usage: cb-repo-list
+#
+
+# Load and validate configurations
+. `dirname $0`/config.sh
+. `dirname $0`/config-test.sh
+test_config_ssh
+test_config_remote
+test_config_repo
+
+# Load dependencies
+. `dirname $0`/lib/ssh.sh
+
+set -e
+
+cb_ssh "ls" "-t" "$CB_REPO"

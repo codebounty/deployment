@@ -10,6 +10,7 @@ CB_SSH_PORT="22"
 CB_USER="codebounty"
 CB_GROUP="$CB_USER"         # Group CB_USER belongs to, usually same as CB_USER. Used for chown.
 CB_ROOT="/srv/codebounty"   # Server directory root
+CB_REPO="$CB_ROOT/repo"     # Directory for storing generated bundle
 
 # Server side admin related settings
 CB_ADMIN_USER="admin"       # Admin user who has sudo privilege

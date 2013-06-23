@@ -4,7 +4,7 @@
 #
 # Author: Kaiwen Xu <kevin@kevxu.net>
 #
-# Usage: update-settings.sh [file]
+# Usage: cb-settings-update file
 #
 
 # Load and validate configurations
@@ -24,7 +24,7 @@ SETTINGS_PATH="$CB_ROOT/$SETTINGS_FILE"
 SETTINGS_PERMISSION="0600"
 
 usage() {
-    echo >&2 "Usage: $ME [file]"
+    echo >&2 "Usage: $ME file"
     exit 3
 }
 

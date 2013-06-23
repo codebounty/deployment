@@ -1,0 +1,48 @@
+#! /bin/sh
+#
+# Script for deploying generated bundle
+#
+# Author: Kaiwen Xu <kevin@kevxu.net>
+#
+# Usage: cb-repo-deploy rev
+#
+
+# Load and validate configurations
+. `dirname $0`/config.sh
+. `dirname $0`/config-test.sh
+test_config_ssh
+test_config_remote
+test_config_root
+test_config_repo
+test_config_admin_user
+test_config_init_script
+
+# Load dependencies
+. `dirname $0`/lib/ssh.sh
+. `dirname $0`/lib/admin.sh
+
+set -e
+
+DEPLOYED="$CB_ROOT/deployed"
+
+usage() {
+    echo >&2 "Usage: $ME rev"
+    exit 3
+}
+
+# Check argument
+rev="$1"
+[ -z "$rev" ] && usage
+cb_ssh "[ ! -d '$CB_REPO/$rev' ]" && { echo >&2 "$ME: Rev $rev not found"; exit 2; }
+
+# Deploy
+cb_ssh "rm" "$DEPLOYED"
+cb_ssh "ln" "-s" "$CB_REPO/$rev" "$DEPLOYED"
+
+# Restart server
+cb_admin_restart_server
+
+if [ $? -eq 0 ]; then
+    echo "Successfully deployed $rev"
+    exit 0
+fi
