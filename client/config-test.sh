@@ -17,7 +17,7 @@ _error_not_set() {
 }
 
 _error_not_found() {
-    if [ "x$3" == "x" ]; then
+    if [ -z "$3" ]; then
         echo "$1: $2 not found" >&2
     else
         echo "$1: $2 not found $3" >&2
@@ -60,8 +60,8 @@ test_config_remote() {
 
     # Try access remote
     test_config_ssh
-    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "uname" >/dev/null 2>&1
-    [ ! $? -eq 0 ] && { echo "$ME: $CB_USER@$CB_REMOTE:$CB_SSH_PORT not accessible" >&2; exit 2; }
+    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "uname" >/dev/null 2>&1 \
+        || { echo "$ME: $CB_USER@$CB_REMOTE:$CB_SSH_PORT not accessible" >&2; exit 2; }
 
     _PASS_REMOTE=true
     if $VERBOSE; then echo "test_config_remote passed"; fi
@@ -76,10 +76,7 @@ test_config_group() {
     test_config_ssh
     test_config_remote
     "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "grep $CB_GROUP /etc/group >/dev/null" \
-
-    if [ ! $? -eq 0 ]; then
-        _error_not_found "$ME" "Group $CB_GROUP"
-    fi
+        || _error_not_found "$ME" "Group $CB_GROUP"
 
     _PASS_GROUP=true
     if $VERBOSE; then echo "test_config_group passed"; fi
@@ -114,8 +111,8 @@ test_config_admin_user() {
 
     # Try access remote
     test_config_ssh
-    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_ADMIN_USER" "$CB_REMOTE" "uname" >/dev/null 2>&1
-    [ ! $? -eq 0 ] && { echo "$ME: $CB_ADMIN_USER@$CB_REMOTE:$CB_SSH_PORT not accessible" >&2; exit 2; }
+    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_ADMIN_USER" "$CB_REMOTE" "uname" >/dev/null 2>&1 \
+        || { echo "$ME: $CB_ADMIN_USER@$CB_REMOTE:$CB_SSH_PORT not accessible" >&2; exit 2; }
 
     _PASS_ADMIN_USER=true
     if $VERBOSE; then echo "test_config_admin_user passed"; fi
