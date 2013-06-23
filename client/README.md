@@ -4,6 +4,8 @@
 
 Change configuration accordingly in `config.sh`.
 
-## Settings
+## Commands
 
-settings-update.sh: Update settings.json file on server side
+* cb-settings-update: Update settings.json file on server side
+* cb-repo-list: List all available meteor bundles
+* cb-repo-deploy: Deploy a specific bundle
