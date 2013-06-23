@@ -1,15 +1,162 @@
 #! /bin/sh
 #
-# A post-receive script which creates a meteor bundle which runs on node.js
-# server
+# A post-receive script which creates a meteor bundle that runs on node.js
+# server.
 #
-# Author: Kaiwen Xu <kevxu.net>
+# Author: Kaiwen Xu <kevin@kevxu.net>
 #
 
 NODE_PATH="/opt/node/default/bin"
 MRT="$NODE_PATH/mrt"
 ROOT="/srv/codebounty"
+DEST="$ROOT/repo"
+TMP="/tmp"
+WORKING_DIR="$TMP/codebounty"
 
-oldrev=$(git rev-parse $1)
-newrev=$(git rev-parse $2)
-refname="$3"
+prep_for_bundle() {
+    # --- Arguments
+    oldrev=$(git rev-parse $1)
+    newrev=$(git rev-parse $2)
+    refname="$3"
+
+    # --- Interpret
+    # 0000->1234 (create)
+    # 1234->2345 (update)
+    # 2345->0000 (delete)
+    if expr "$oldrev" : '0*$' >/dev/null
+    then
+        change_type="create"
+    else
+        if expr "$newrev" : '0*$' >/dev/null
+        then
+            change_type="delete"
+        else
+            change_type="update"
+        fi
+    fi
+
+    # --- Get the revision types
+    newrev_type=$(git cat-file -t $newrev 2> /dev/null)
+    oldrev_type=$(git cat-file -t "$oldrev" 2> /dev/null)
+    case "$change_type" in
+    create|update)
+        rev="$newrev"
+        rev_type="$newrev_type"
+        ;;
+    delete)
+        rev="$oldrev"
+        rev_type="$oldrev_type"
+        echo >&2 "*** Push deletion, $refname"
+        echo >&2 "***  - no bundle generated."
+        return 1
+        ;;
+    esac
+
+    # The revision type tells us what type the commit is, combined with
+    # the location of the ref we can decide between
+    #  - working branch
+    #  - tracking branch
+    #  - unannoted tag
+    #  - annotated tag
+    case "$refname","$rev_type" in
+        refs/tags/*,commit)
+            # un-annotated tag
+            refname_type="tag"
+            short_refname=${refname##refs/tags/}
+            echo >&2 "*** Push un-annotated tag, $refname"
+            echo >&2 "***  - no bundle generated."
+            return 1
+            ;;
+        refs/tags/*,tag)
+            # annotated tag
+            refname_type="annotated tag"
+            short_refname=${refname##refs/tags/}
+            echo >&2 "*** Push annotated tag, $refname"
+            echo >&2 "***  - no bundle generated."
+            return 1
+            ;;
+        refs/heads/master,commit)
+            # master branch
+            refname_type="branch"
+            short_refname=${refname##refs/heads/}
+            echo >&2 "*** Push-update of master branch, $refname"
+            echo >&2 "***  - new bundle will be generated."
+            ;;
+        refs/heads/*,commit)
+            # branch other than master
+            refname_type="branch"
+            short_refname=${refname##refs/heads/}
+            echo >&2 "*** Push-update of non-master branch, $refname"
+            echo >&2 "***  - no bundle generated."
+            return 1
+            ;;
+        refs/remotes/*,commit)
+            # tracking branch
+            refname_type="tracking branch"
+            short_refname=${refname##refs/remotes/}
+            echo >&2 "*** Push-update of tracking branch, $refname"
+            echo >&2 "***  - no bundle generated."
+            return 1
+            ;;
+        *)
+            # Anything else (is there anything else?)
+            echo >&2 "*** Unknown type of update to $refname ($rev_type)"
+            echo >&2 "***  - no bundle generated"
+            return 1
+            ;;
+    esac
+}
+
+generate_bundle() {
+    if [ -d "$WORKING_DIR" ]; then
+        echo >&2 "*** Temporary directory $WORKING_DIR already exists"
+        echo >&2 "***  - bundle generation aborted"
+        exit 2
+    else
+        mkdir -p "$WORKING_DIR" \
+            || { echo >&2 "*** Failed to create $WORKING_DIR, aborting..."; clean_up; exit 2; }
+    fi
+
+    echo "*** Cloning into $WORKING_DIR..."
+    git clone "$GIT_DIR" "$WORKING_DIR" \
+        || { echo >&2 "*** Clone failed, aborting..."; clean_up; exit 2; }
+
+    echo "*** Checking out latest master..."
+    cd $WORKING_DIR
+    git checkout master \
+        || { echo >&2 "*** Checkout failed, aborting..."; clean_up; exit 2; }
+
+    echo "*** Generating meteor bundle..."
+    mkdir -p "$WORKING_DIR/$rev" \
+        || { echo >&2 "*** Fail to create $WORKING_DIR/$rev, aborting..."; clean_up; exit 2; }
+    cd $WORKING_DIR
+    "$MRT" bundle "$WORKING_DIR/$rev/bundle.tar.gz" \
+        || { echo >&2 "*** Generation failed, aborting..."; clean_up; exit 2; }
+
+    echo "*** Extracting bundle..."
+    tar xf -C "$WORKING_DIR/$rev" "$WORKING_DIR/$rev/bundle.tar.gz" \
+        || { echo >&2 "*** Extraction failed, aborting..."; clean_up; exit 2; }
+
+    if [ -d "$DEST/$rev" ]; then
+        echo >&2 "*** Revision $rev already exists, aborting..."
+        clean_up
+        exit 1
+    else
+        mv "$WORKING_DIR/$rev/bundle" "$DEST/$rev" \
+            || { echo >&2 "*** Failed to moving bundle into $DEST/$rev, aborting..."; clean_up; exit 2; }
+    fi
+}
+
+clean_up() {
+    echo "*** Cleaning up..."
+    cd /
+    rm -rf "$WORKING_DIR"
+}
+
+# --- Main loop
+while read oldrev newrev refname
+do
+    prep_for_bundle $oldrev $newrev $refname || continue
+    generate_bundle
+    clean_up
+done
