@@ -14,6 +14,7 @@ test_config_all
 
 # Load dependencies
 . `dirname $0`/lib/ssh.sh
+. `dirname $0`/lib/admin.sh
 
 set -e
 
@@ -36,6 +37,9 @@ cb_scp_upload "$1" "$SETTINGS_PATH"
 
 if $VERBOSE; then echo "Changing permission of $SETTINGS_PATH..."; fi
 cb_ssh "chmod" "$SETTINGS_PERMISSION" "$SETTINGS_PATH"
+
+# Restart server
+cb_admin_restart_server
 
 if [ $? -eq 0 ]; then
     echo "Successfully updated settings with $1"
