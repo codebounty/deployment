@@ -1,4 +1,4 @@
-# ssh related operations
+# SSH related operations
 #
 # Author: Kaiwen Xu <kevin@kevxu.net>
 #
@@ -19,9 +19,13 @@ cb_scp_download() {
     cb_scp "$CB_USER"@"$CB_REMOTE":"$1" "$2"
 }
 
+cb_ssh_verbose() {
+    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "$@"
+}
+
 cb_ssh() {
     if $VERBOSE; then
-        "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "$@"
+        cb_ssh_verbose "$@"
     else
         "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "$@" >/dev/null
     fi
