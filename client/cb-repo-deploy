@@ -4,7 +4,7 @@
 #
 # Author: Kaiwen Xu <kevin@kevxu.net>
 #
-# Usage: cb-repo-deploy rev
+# Usage: cb-repo-deploy rev|latest
 #
 
 # Load and validate configurations
@@ -26,14 +26,33 @@ set -e
 DEPLOYED="$CB_ROOT/deployed"
 
 usage() {
-    echo >&2 "Usage: $ME rev"
+    echo >&2 "Usage: $ME rev|latest"
     exit 3
 }
 
 # Check argument
-rev="$1"
-[ -z "$rev" ] && usage
+[ -z "$1" ] && usage
+
+case "$1" in
+    latest)
+        # If argument is "latest", search for latest rev
+        rev=$(cb_ssh_verbose "ls" "-t" "$CB_REPO" | sed -n 1p)
+        ;;
+    *)
+        rev="$1"
+        ;;
+esac
+
 cb_ssh "[ ! -d '$CB_REPO/$rev' ]" && { echo >&2 "$ME: Rev $rev not found"; exit 2; }
+
+# Check already deployed version
+if cb_ssh "[ -L '$DEPLOYED' ]"; then
+    deployed_path=$(cb_ssh_verbose "ls" "-l" "$DEPLOYED" | awk '{print $11}')
+    if [ "$deployed_path" == "$CB_REPO/$rev" ]; then
+        echo "$rev already deployed, abort"
+        exit 1
+    fi
+fi
 
 # Deploy
 cb_ssh "rm" "$DEPLOYED"
