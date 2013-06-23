@@ -17,7 +17,7 @@ CB_ADMIN_USER="admin"       # Admin user who has sudo privilege
 CB_INIT_SCRIPT="/etc/init.d/codebounty"
 
 # Misc settings
-VERBOSE=true
+VERBOSE=false
 
 #####################
 # DO NOT EDIT BELOW #
