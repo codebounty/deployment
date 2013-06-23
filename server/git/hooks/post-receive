@@ -118,14 +118,12 @@ generate_bundle() {
             || { echo >&2 "*** Failed to create $WORKING_DIR, aborting..."; clean_up; exit 2; }
     fi
 
-    echo "Cloning into $WORKING_DIR..."
     git clone "$GIT_DIR" "$WORKING_DIR" \
         || { echo >&2 "*** Clone failed, aborting..."; clean_up; exit 2; }
 
     echo "Checking out latest master..."
     # Set GIT_DIR in order for git checkout to work
-    export GIT_DIR="$WORKING_DIR/.git"
-    cd $WORKING_DIR && git checkout master \
+    cd $WORKING_DIR && GIT_DIR="$WORKING_DIR/.git" git checkout master \
         || { echo >&2 "*** Checkout failed, aborting..."; clean_up; exit 2; }
 
     echo "Generating meteor bundle..."
@@ -156,6 +154,9 @@ clean_up() {
 # --- Main loop
 while read oldrev newrev refname
 do
+    # Environment variable may mess up if this loop actually being executed
+    # multiple times. Maybe? Not sure if there will be two updates to master
+    # being read.
     prep_for_bundle $oldrev $newrev $refname || continue
     generate_bundle
     clean_up
