@@ -5,8 +5,6 @@
 # Depends:
 #   ssh
 #
-# Please make sure include dependencies above before loading this file
-#
 
 CHECKSUM="md5"
 
