@@ -7,6 +7,7 @@
 #
 
 NODE_PATH="/opt/node/default/bin"
+PATH="$PATH:$NODE_PATH"; export PATH
 MRT="$NODE_PATH/mrt"
 ROOT="/srv/codebounty"
 DEST="$ROOT/repo"
@@ -117,24 +118,24 @@ generate_bundle() {
             || { echo >&2 "*** Failed to create $WORKING_DIR, aborting..."; clean_up; exit 2; }
     fi
 
-    echo "*** Cloning into $WORKING_DIR..."
+    echo "Cloning into $WORKING_DIR..."
     git clone "$GIT_DIR" "$WORKING_DIR" \
         || { echo >&2 "*** Clone failed, aborting..."; clean_up; exit 2; }
 
-    echo "*** Checking out latest master..."
-    cd $WORKING_DIR
-    git checkout master \
+    echo "Checking out latest master..."
+    # Set GIT_DIR in order for git checkout to work
+    export GIT_DIR="$WORKING_DIR/.git"
+    cd $WORKING_DIR && git checkout master \
         || { echo >&2 "*** Checkout failed, aborting..."; clean_up; exit 2; }
 
-    echo "*** Generating meteor bundle..."
+    echo "Generating meteor bundle..."
     mkdir -p "$WORKING_DIR/$rev" \
         || { echo >&2 "*** Fail to create $WORKING_DIR/$rev, aborting..."; clean_up; exit 2; }
-    cd $WORKING_DIR
-    "$MRT" bundle "$WORKING_DIR/$rev/bundle.tar.gz" \
+    cd "$WORKING_DIR/meteor" && "$MRT" bundle "$WORKING_DIR/$rev/bundle.tar.gz" \
         || { echo >&2 "*** Generation failed, aborting..."; clean_up; exit 2; }
 
-    echo "*** Extracting bundle..."
-    tar xf -C "$WORKING_DIR/$rev" "$WORKING_DIR/$rev/bundle.tar.gz" \
+    echo "Extracting bundle..."
+    tar xf "$WORKING_DIR/$rev/bundle.tar.gz" -C "$WORKING_DIR/$rev" \
         || { echo >&2 "*** Extraction failed, aborting..."; clean_up; exit 2; }
 
     if [ -d "$DEST/$rev" ]; then
@@ -148,9 +149,8 @@ generate_bundle() {
 }
 
 clean_up() {
-    echo "*** Cleaning up..."
-    cd /
-    rm -rf "$WORKING_DIR"
+    echo "Cleaning up..."
+    cd / && rm -rf "$WORKING_DIR"
 }
 
 # --- Main loop
