@@ -1,4 +1,4 @@
-# Helper script for ssh related operations
+# ssh related operations
 #
 # Author: Kaiwen Xu <kevin@kevxu.net>
 #
