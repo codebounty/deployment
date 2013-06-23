@@ -19,4 +19,4 @@ test_config_repo
 
 set -e
 
-cb_ssh "ls" "-t" "$CB_REPO"
+cb_ssh_verbose "ls" "-t" "$CB_REPO"
