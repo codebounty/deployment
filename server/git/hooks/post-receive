@@ -154,6 +154,10 @@ clean_up() {
     cd / && rm -rf "$WORKING_DIR"
 }
 
+finish() {
+    echo "Successfully generated $rev"
+}
+
 # --- Main loop
 while read oldrev newrev refname
 do
@@ -163,4 +167,5 @@ do
     prep_for_bundle $oldrev $newrev $refname || continue
     generate_bundle
     clean_up
+    finish
 done
