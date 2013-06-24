@@ -12,7 +12,7 @@ MRT="$NODE_PATH/mrt"
 METEOR="$HOME/.meteor/meteor"
 ROOT="/srv/codebounty"
 DEST="$ROOT/repo"
-TMP="/tmp"
+TMP="/local"
 WORKING_DIR="$TMP/codebounty"
 
 prep_for_bundle() {
