@@ -47,7 +47,7 @@ cb_ssh "[ ! -d '$CB_REPO/$rev' ]" && { echo >&2 "$ME: Rev $rev not found"; exit 
 
 # Check already deployed version
 if cb_ssh "[ -L '$DEPLOYED' ]"; then
-    deployed_path=$(cb_ssh_verbose "ls" "-l" "$DEPLOYED" | awk '{print $11}')
+    deployed_path=$(cb_ssh_verbose "readlink" "$DEPLOYED")
     if [ "$deployed_path" == "$CB_REPO/$rev" ]; then
         echo "$rev already deployed, abort"
         exit 1
