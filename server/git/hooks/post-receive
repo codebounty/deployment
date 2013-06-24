@@ -12,8 +12,7 @@ MRT="$NODE_PATH/mrt"
 METEOR="$HOME/.meteor/meteor"
 ROOT="/srv/codebounty"
 DEST="$ROOT/repo"
-TMP="/tmp"
-WORKING_DIR="$TMP/codebounty"
+TMP="/local/codebounty/tmp"
 
 prep_for_bundle() {
     # --- Arguments
@@ -53,6 +52,9 @@ prep_for_bundle() {
         return 1
         ;;
     esac
+
+    # --- Set working directory for git checkout
+    WORKING_DIR="$TMP/codebounty-$rev"
 
     # The revision type tells us what type the commit is, combined with
     # the location of the ref we can decide between
