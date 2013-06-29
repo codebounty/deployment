@@ -176,6 +176,7 @@ test_config_non_admin() {
     test_config_group
     test_config_root
     test_config_repo
+    test_config_git_repo
 }
 
 test_config_admin() {
