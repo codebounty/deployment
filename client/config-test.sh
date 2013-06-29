@@ -9,6 +9,7 @@ _PASS_REMOTE=false
 _PASS_GROUP=false
 _PASS_ROOT=false
 _PASS_REPO=false
+_PASS_GIT_REPO=false
 _PASS_ADMIN_USER=false
 _PASS_INIT_SCRIPT=false
 
@@ -111,6 +112,23 @@ test_config_repo() {
 
     _PASS_REPO=true
     if $VERBOSE; then echo >&2 "test_config_repo passed"; fi
+}
+
+test_config_git_repo() {
+    if $_PASS_GIT_REPO; then return 0; fi
+
+    [ -z "$CB_GIT_REPO" ] && _error_not_set "$ME" "CB_GIT_REPO"
+
+    # Test folder existence and whether it's git repo folder
+    test_config_ssh
+    test_config_remote
+    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "[ ! -d $CB_GIT_REPO ]" \
+        && _error_not_found "$ME" "$CB_GIT_REPO" "on server"
+    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_USER" "$CB_REMOTE" "GIT_DIR='$CB_GIT_REPO'" \
+        "git" "log" ">/dev/null" "2>&1" || _error_not_found "$ME" "git repository" "on $CB_GIT_REPO"
+
+    _PASS_GIT_REPO=true
+    if $VERBOSE; then echo >&2 "test_config_git_repo passed"; fi
 }
 
 #

@@ -13,10 +13,15 @@
 test_config_ssh
 test_config_remote
 test_config_repo
+test_config_git_repo
 
 # Load dependencies
 . `dirname $0`/lib/ssh.sh
 
 set -e
 
-cb_ssh_verbose "ls" "-t" "$CB_REPO"
+FORMAT="%Cred%H%Creset%nThe author was %Cgreen%an%Creset, created %Cgreen%ar%Creset%nCommit message: %Cblue%s%Creset%n"
+SHOW_LOG="GIT_DIR='$CB_GIT_REPO' git show --format='$FORMAT' -s"
+
+avail_repos=$(cb_ssh_verbose "ls" "-t" "$CB_REPO")
+cb_ssh_verbose "$SHOW_LOG"
