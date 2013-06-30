@@ -24,4 +24,4 @@ FORMAT="%Cred%H%Creset%nThe author was %Cgreen%an%Creset, created %Cgreen%ar%Cre
 SHOW_LOG="GIT_DIR='$CB_GIT_REPO' git show --format='$FORMAT' -s"
 
 avail_repos=$(cb_ssh_verbose "ls" "-t" "$CB_REPO")
-cb_ssh_verbose "$SHOW_LOG"
+cb_ssh_verbose "$SHOW_LOG" $avail_repos
