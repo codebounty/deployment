@@ -120,9 +120,13 @@ apt-get update && apt-get -y install nginx
 # Add users
 useradd bitcoind -d /home/bitcoind -r -s /bin/false -U
 
+useradd bitcoind-test -d /home/bitcoind-test -r -s /bin/false -U
+
 useradd codebounty -d /home/codebounty -s /bin/bash -U
 
 chown -R bitcoind:bitcoind /home/bitcoind
+
+chown -R bitcoind-test:bitcoind-test /home/bitcoind-test
 
 mkdir -p /local/codebounty/tmp
 
