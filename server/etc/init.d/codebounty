@@ -9,14 +9,14 @@
 # Short-Description: codebounty server
 ### END INIT INFO
 
-PATH=/sbin:/usr/sbin:/bin:/usr/bin:/opt/node/default/bin
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/home/codebounty/node/default/bin
 DAEMON_ARGS="/srv/codebounty/deployed/main.js"
 DESC="codebounty server"
 NODEUSER=codebounty:codebounty
 LOCAL_VAR_RUN=/var/run
 CHDIR="/srv/codebounty/deployed"
 NAME=node
-DAEMON=/opt/node/default/bin/$NAME
+DAEMON=/home/codebounty/node/default/bin/$NAME
 LOGFILE=/var/log/codebounty/codebounty.log
 LOGPERM=0640
 

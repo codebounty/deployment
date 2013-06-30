@@ -6,7 +6,7 @@
 # Author: Kaiwen Xu <kevin@kevxu.net>
 #
 
-NODE_PATH="/opt/node/default/bin"
+NODE_PATH="$HOME/node/default/bin"
 PATH="$PATH:$NODE_PATH"; export PATH
 MRT="$NODE_PATH/mrt"
 METEOR="$HOME/.meteor/meteor"
@@ -124,12 +124,13 @@ generate_bundle() {
     git clone "$GIT_DIR" "$WORKING_DIR" \
         || { echo >&2 "*** Clone failed, aborting..."; clean_up; exit 2; }
 
-    echo "Checking out latest master..."
+    echo "Checking out $rev..."
     # Set GIT_DIR in order for git checkout to work
-    cd $WORKING_DIR && GIT_DIR="$WORKING_DIR/.git" git checkout master \
+    cd $WORKING_DIR && GIT_DIR="$WORKING_DIR/.git" git checkout "$rev" \
         || { echo >&2 "*** Checkout failed, aborting..."; clean_up; exit 2; }
 
     echo "Generating meteor bundle..."
+    rm -rf "$HOME/.npm" "$HOME/.meteorite" "$HOME/tmp/npm-*"    # Clean up cache
     mkdir -p "$WORKING_DIR/$rev" \
         || { echo >&2 "*** Fail to create $WORKING_DIR/$rev, aborting..."; clean_up; exit 2; }
     cd "$WORKING_DIR/meteor" && "$MRT" install \
