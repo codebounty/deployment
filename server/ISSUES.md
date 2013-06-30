@@ -1,4 +1,4 @@
-# Previous Deployment Issues
+# Previous Deployment Issues and Suggestions
 
 ## Meteor and Nginx
 
@@ -16,5 +16,8 @@
 * When meteor package `force-ssl` is used, `x-forwarded-proto` header must be passed to meteor so that it knows https is successfully redirected to.
     * So in the nginx configuration file, adding the line `proxy_set_header X-Forwarded-Proto $scheme;` will do the trick.
 
-* DO NOT mount and do fsck on normal file in /etc/fstab
+* DO NOT mount and do fsck on normal file in /etc/fstab.
     * If the file is not found (due to certain partition is mounted yet), fsck will exit with error code, which cause the system to prompt you if you want to go to maintenance shell and the system will fail to boot since you do not have physical access to it.
+
+* It's NOT recommended to mount ephemeral storage device in /etc/fstab.
+    * Ephemeral store will be cleared out if you stopped the instance.
