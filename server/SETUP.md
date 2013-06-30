@@ -47,6 +47,14 @@
 * Follow instructions
 * Login use user ```admin```
 
+### Stop and Attach EBS Volumes
+
+* Run ```sudo poweroff```
+* Go to Volumes
+	* Attach ```vol-2426d17e - CbHome - in us-east-1a``` to Device ```/dev/sdb```
+	* Attach ```vol-ca26d190 - CbSrv - in us-east-1a``` to Device ```/dev/sdc```
+* Start instance
+
 ### Run Commands
 
 ```
