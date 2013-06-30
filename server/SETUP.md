@@ -172,6 +172,12 @@ update-rc.d codebounty defaults
 
 /etc/init.d/monit reload
 
+# Configure logrotate
+# Copy /etc/logrotate.d into server (merge folder, don't overwrite)
+
+# Miscellaneous
+chown nginx:admin /var/log/nginx/*.log && chmod 640 /var/log/nginx/*.log
+
 # Reboot server to test if everything works
 reboot
 ```

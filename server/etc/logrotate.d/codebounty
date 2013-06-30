@@ -1,0 +1,9 @@
+/var/log/nginx/*.log {
+	monthly
+        missingok
+        rotate 100
+	maxsize 512000
+        compress
+        delaycompress
+        create 640 codebounty codebounty
+}
