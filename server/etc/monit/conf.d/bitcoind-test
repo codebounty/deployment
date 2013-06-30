@@ -1,3 +1,3 @@
-check process bitcoind with pidfile /var/run/bitcoind-test.pid
+check process bitcoind-test with pidfile /var/run/bitcoind-test.pid
 	start program = "/etc/init.d/bitcoind-test start"
 	stop program  = "/etc/init.d/bitcoind-test stop"
