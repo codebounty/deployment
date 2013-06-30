@@ -99,9 +99,11 @@ sudo -i
 chown root:root /tmp && chmod 1777 /tmp
 
 # Install packages
-apt-get -y install vim curl git
+apt-get -y install vim curl git bzip2
 
-apt-get -y install fail2ban monit
+apt-get -y install fail2ban monit unattended-upgrades apticron
+
+apt-get -y install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
 
 # Install Nginx
 cat << EOF >> /etc/apt/sources.list
@@ -115,13 +117,61 @@ apt-key add /tmp/nginx_signing.key && rm -f /tmp/nginx_signing.key
 
 apt-get update && apt-get -y install nginx
 
-# Edit Grub configuration
-# Edit file /etc/default/grub
-# Change to GRUB_TIMEOUT=0
-# Change to GRUB_CMDLINE_LINUX_DEFAULT=""
-# Uncomment GRUB_DISABLE_RECOVERY="true"
-# Save file
+# Add users
+useradd bitcoind -d /home/bitcoind -r -s /bin/false -U
+
+useradd codebounty -d /home/codebounty -s /bin/bash -U
+
+chown -R bitcoind:bitcoind /home/bitcoind
+
+mkdir -p /local/codebounty/tmp
+
+chown -R codebounty:codebounty /home/codebounty /srv/codebounty /local/codebounty
+
+chmod 700 /local/codebounty
+
+# Configure GRUB
+# Copy /etc/default/grub into server
 
 update-grub
 
+# Configure fail2ban
+# Copy /etc/fail2ban into server (merge folder, don't overwrite)
+
+/etc/init.d/fail2ban reload
+
+# Configure nginx
+rm -f /etc/nginx/conf.d/*.conf
+
+# Copy /etc/nginx into server (merge folder, don't overwrite)
+# Copy decrypted ssl key into /etc/nginx/conf/ssl.key
+
+chown root:root /etc/nginx/conf/ssl.key && chmod 400 /etc/nginx/conf/ssl.key
+
+/etc/init.d/nginx reload
+
+# Configure bitcoind
+# Copy /etc/init.d/bitcoind into server
+
+/etc/init.d/bitcoind start
+
+update-rc.d bitcoind defaults
+
+# Configure codebounty
+# Copy /etc/init.d/codebounty into server
+# Copy /etc/default/codebounty into server and add database password
+
+mkdir -p /var/log/codebounty
+
+/etc/init.d/codebounty start
+
+update-rc.d codebounty defaults
+
+# Configure monit
+# Copy /etc/monit into server (merge folder, don't overwrite)
+
+/etc/init.d/monit reload
+
+# Reboot server to test if everything works
+reboot
 ```
