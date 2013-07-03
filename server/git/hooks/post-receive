@@ -13,6 +13,7 @@ METEOR="$HOME/.meteor/meteor"
 ROOT="/srv/codebounty"
 DEST="$ROOT/repo"
 TMP="/local/codebounty/tmp"
+_GIT_DIR="$GIT_DIR"     # Backup GIT_DIR
 
 prep_for_bundle() {
     # --- Arguments
@@ -125,18 +126,22 @@ generate_bundle() {
         || { echo >&2 "*** Clone failed, aborting..."; clean_up; exit 2; }
 
     echo "Checking out $rev..."
-    # Set GIT_DIR in order for git checkout to work
-    cd $WORKING_DIR && GIT_DIR="$WORKING_DIR/.git" git checkout "$rev" \
+    # Unset GIT_DIR in order for git checkout to work
+    cd $WORKING_DIR && unset GIT_DIR && git checkout "$rev" \
         || { echo >&2 "*** Checkout failed, aborting..."; clean_up; exit 2; }
+    # Restore GIT_DIR
+    GIT_DIR="$_GIT_DIR"
 
     echo "Generating meteor bundle..."
     rm -rf "$HOME/.npm" "$HOME/.meteorite" "$HOME/tmp/npm-*"    # Clean up cache
     mkdir -p "$WORKING_DIR/$rev" \
         || { echo >&2 "*** Fail to create $WORKING_DIR/$rev, aborting..."; clean_up; exit 2; }
-    cd "$WORKING_DIR/meteor" && "$MRT" install \
+    # Meteorite uses git, so have to unset GIT_DIR in order for it work
+    cd "$WORKING_DIR/meteor" && unset GIT_DIR && "$MRT" install \
         || { echo >&2 "*** Install meteorite package failed, aborting..."; clean_up; exit 2; }
-    cd "$WORKING_DIR/meteor" && "$METEOR" bundle "$WORKING_DIR/$rev/bundle.tar.gz" \
+    cd "$WORKING_DIR/meteor" && unset GIT_DIR && "$METEOR" bundle "$WORKING_DIR/$rev/bundle.tar.gz" \
         || { echo >&2 "*** Generation failed, aborting..."; clean_up; exit 2; }
+    GIT_DIR="$_GIT_DIR"
 
     echo "Extracting bundle..."
     tar xf "$WORKING_DIR/$rev/bundle.tar.gz" -C "$WORKING_DIR/$rev" \
