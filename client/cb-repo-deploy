@@ -23,8 +23,6 @@ test_config_init_script
 
 set -e
 
-DEPLOYED="$CB_ROOT/deployed"
-
 usage() {
     echo >&2 "Usage: $ME rev|latest"
     exit 3
@@ -46,8 +44,8 @@ esac
 cb_ssh "[ ! -d '$CB_REPO/$rev' ]" && { echo >&2 "$ME: Rev $rev not found"; exit 2; }
 
 # Check already deployed version
-if cb_ssh "[ -L '$DEPLOYED' ]"; then
-    deployed_path=$(cb_ssh_verbose "readlink" "$DEPLOYED")
+if cb_ssh "[ -L '$CB_REPO_DEPLOYED' ]"; then
+    deployed_path=$(cb_ssh_verbose "readlink" "$CB_REPO_DEPLOYED")
     if [ "$deployed_path" == "$CB_REPO/$rev" ]; then
         echo "$rev already deployed, abort"
         exit 1
@@ -55,8 +53,8 @@ if cb_ssh "[ -L '$DEPLOYED' ]"; then
 fi
 
 # Deploy
-cb_ssh "rm" "$DEPLOYED"
-cb_ssh "ln" "-s" "$CB_REPO/$rev" "$DEPLOYED"
+cb_ssh "rm" "$CB_REPO_DEPLOYED"
+cb_ssh "ln" "-s" "$CB_REPO/$rev" "$CB_REPO_DEPLOYED"
 
 # Restart server
 cb_admin_restart_server

@@ -12,6 +12,7 @@ CB_GROUP="$CB_USER"         # Group CB_USER belongs to, usually same as CB_USER.
 CB_ROOT="/srv/codebounty"   # Server directory root
 CB_REPO="$CB_ROOT/repo"     # Directory for storing generated bundle
 CB_GIT_REPO="/home/codebounty/codebounty.git"   # Git repository on server
+CB_REPO_DEPLOYED="$CB_ROOT/deployed"            # Deployed symbolic link
 
 # Server side admin related settings
 CB_ADMIN_USER="admin"       # Admin user who has sudo privilege
