@@ -2,7 +2,7 @@
 ### BEGIN INIT INFO
 # Provides:          bitcoind-test
 # Required-Start:    $remote_fs $network $remote_fs
-# Required-Stop:     $remote_fs codebounty
+# Required-Stop:     $remote_fs codebounty-test
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: bitcoind daemon testnet startup script

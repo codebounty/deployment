@@ -171,6 +171,21 @@ mkdir -p /var/log/codebounty
 
 update-rc.d codebounty defaults
 
+# Configure bitcoind-test
+# Copy /etc/init.d/bitcoind-test into server
+
+/etc/init.d/bitcoind-test start
+
+update-rc.d bitcoind-test defaults
+
+# Configure codebounty-test
+# Copy /etc/init.d/codebounty-test into server
+# Copy /etc/default/codebounty-test into server and add database password
+
+/etc/init.d/codebounty-test start
+
+update-rc.d codebounty-test defaults
+
 # Configure monit
 # Copy /etc/monit into server (merge folder, don't overwrite)
 
