@@ -36,10 +36,12 @@ case "$1" in
     deploy)
         REPO_LINK="$CB_REPO_DEPLOYED"
         RESTART_SERVER="cb_admin_restart_server"
+        STOP_SERVER="cb_admin_stop_server"
         ;;
     test)
         REPO_LINK="$CB_REPO_TESTING"
         RESTART_SERVER="cb_admin_restart_test_server"
+        STOP_SERVER="cb_admin_stop_test_server"
         ;;
     *)
         usage
@@ -66,6 +68,9 @@ if cb_ssh "[ -L '$REPO_LINK' ]"; then
         exit 1
     fi
 fi
+
+# Stop server
+"$STOP_SERVER"
 
 # Deploy
 cb_ssh "rm" "-f" "$REPO_LINK"
