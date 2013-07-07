@@ -19,34 +19,47 @@ test_config_all
 
 set -e
 
-SETTINGS_FILE="settings.json"
-SETTINGS_PATH="$CB_ROOT/$SETTINGS_FILE"
-SETTINGS_PERMISSION="0600"
+SETTINGS_DEPLOY_FILE="settings.json"
+SETTINGS_TEST_FILE="settings-test.json"
 
 usage() {
-    echo >&2 "Usage: $ME file"
+    echo >&2 "Usage: $ME deploy|test file"
     exit 3
 }
 
 # Check argument
-[ -z "$1" ] && usage
-[ ! -f "$1" ] && { echo >&2 "$ME: $1 not found"; exit 2; }
+[ -z "$1" ] || [ -z "$2" ] && usage
+case "$1" in
+    deploy)
+        SETTINGS_FILE="$SETTINGS_DEPLOY_FILE"
+        ;;
+    test)
+        SETTINGS_FILE="$SETTINGS_TEST_FILE"
+        ;;
+    *)
+        usage
+        ;;
+esac
+[ ! -f "$2" ] && { echo >&2 "$ME: $2 not found"; exit 2; }
+
+SETTINGS_PATH="$CB_ROOT/$SETTINGS_FILE"
+SETTINGS_PERMISSION="0600"
 
 # Upload settings file
-if $VERBOSE; then echo "Uploading $1 to $SETTINGS_PATH on server..."; fi
-cb_scp_upload "$1" "$SETTINGS_PATH"
+if $VERBOSE; then echo "Uploading $2 to $SETTINGS_PATH on server..."; fi
+cb_scp_upload "$2" "$SETTINGS_PATH"
 
 if $VERBOSE; then echo "Changing ownership and permission of $SETTINGS_PATH..."; fi
 cb_admin_ssh "sudo" "chown" "$CB_USER:$CB_GROUP" "$SETTINGS_PATH"    # Ensure setting file ownership
 cb_ssh "chmod" "$SETTINGS_PERMISSION" "$SETTINGS_PATH"
 
 if $VERBOSE; then echo "Verifying file integrity..."; fi
-cb_verify_file "$1" "$SETTINGS_PATH"
+cb_verify_file "$2" "$SETTINGS_PATH"
 
 # Restart server
 cb_admin_restart_server
 
 if [ $? -eq 0 ]; then
-    echo "Successfully updated settings with $1"
+    echo "Successfully updated settings with $2"
     exit 0
 fi
