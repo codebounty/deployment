@@ -18,6 +18,7 @@ CB_REPO_TESTING="$CB_ROOT/testing"              # Testing symbolic
 # Server side admin related settings
 CB_ADMIN_USER="admin"                           # Admin user who has sudo privilege
 CB_INIT_SCRIPT="/etc/init.d/codebounty"
+CB_INIT_SCRIPT_TEST="/etc/init.d/codebounty-test"
 
 # Misc settings
 VERBOSE=false

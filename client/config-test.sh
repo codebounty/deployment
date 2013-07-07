@@ -12,6 +12,7 @@ _PASS_REPO=false
 _PASS_GIT_REPO=false
 _PASS_ADMIN_USER=false
 _PASS_INIT_SCRIPT=false
+_PASS_INIT_SCRIPT_TEST=false
 
 _error_not_set() {
     echo >&2 "$1: variable $2 not set"
@@ -165,6 +166,19 @@ test_config_init_script() {
     if $VERBOSE; then echo >&2 "test_config_init_script passed"; fi
 }
 
+test_config_init_script_test() {
+    if $_PASS_INIT_SCRIPT_TEST; then return 0; fi
+
+    # Since using init script must has admin privilege,
+    # test admin user accessible
+    test_config_admin_user
+    "$CB_SSH" -p "$CB_SSH_PORT" -l "$CB_ADMIN_USER" "$CB_REMOTE" "[ ! -f $CB_INIT_SCRIPT_TEST ]" \
+        && _error_not_found "$ME" "$CB_INIT_SCRIPT_TEST" "on server"
+
+    _PASS_INIT_SCRIPT=true
+    if $VERBOSE; then echo >&2 "test_config_init_script_test passed"; fi
+}
+
 #
 # Config test collections
 #
@@ -182,6 +196,7 @@ test_config_non_admin() {
 test_config_admin() {
     test_config_admin_user
     test_config_init_script
+    test_config_init_script_test
 }
 
 test_config_all() {

@@ -12,5 +12,9 @@ cb_admin_ssh() {
 }
 
 cb_admin_restart_server() {
-    cb_admin_ssh "sudo" "/etc/init.d/codebounty" "restart"
+    cb_admin_ssh "sudo" "$CB_INIT_SCRIPT" "restart"
+}
+
+cb_admin_restart_test_server() {
+    cb_admin_ssh "sudo" "$CB_INIT_SCRIPT_TEST" "restart"
 }
