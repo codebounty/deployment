@@ -20,8 +20,9 @@ test_config_git_repo
 
 set -e
 
-FORMAT="%Cred%H%Creset%nThe author was %Cgreen%an%Creset, created %Cgreen%ar%Creset%nCommit message: %Cblue%s%Creset%n"
-SHOW_LOG="GIT_DIR='$CB_GIT_REPO' git show --format='$FORMAT' -s"
+FORMAT="%m%m %Cred%H%Creset%nThe author was %Cgreen%an%Creset, created %Cgreen%ad%Creset (%Cgreen%ar%Creset)%nCommit message: %Cblue%s%Creset%n"
+DATE_FORMAT="local"
+SHOW_LOG="GIT_DIR='$CB_GIT_REPO' git show --format='$FORMAT' --date='$DATE_FORMAT' -s"
 
 avail_repos=$(cb_ssh_verbose "ls" "-t" "$CB_REPO")
 cb_ssh_verbose "$SHOW_LOG" $avail_repos
