@@ -25,4 +25,7 @@ DATE_FORMAT="local"
 SHOW_LOG="GIT_DIR='$CB_GIT_REPO' git show --format='$FORMAT' --date='$DATE_FORMAT' -s"
 
 avail_repos=$(cb_ssh_verbose "ls" "-t" "$CB_REPO")
-cb_ssh_verbose "$SHOW_LOG" $avail_repos
+deployed_repo=$(basename `cb_ssh_verbose "readlink" "$CB_REPO_DEPLOYED"`)
+
+# Add deployed tag to the output message
+cb_ssh_verbose "$SHOW_LOG" $avail_repos | sed -e "s/$deployed_repo/(deployed) $deployed_repo/"
