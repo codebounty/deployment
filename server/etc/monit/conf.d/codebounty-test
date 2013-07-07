@@ -1,0 +1,10 @@
+check process codebounty-test with pidfile /var/run/codebounty-test.pid
+	start program = "/etc/init.d/codebounty-test start"
+	stop program = "/etc/init.d/codebounty-test stop"
+
+	if failed port 7000 protocol HTTP
+		request /
+		with timeout 10 seconds
+		then restart
+	if 3 restarts within 5 cycles
+		then timeout
