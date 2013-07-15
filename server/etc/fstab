@@ -1,0 +1,3 @@
+/dev/xvda1 /     ext4    defaults,barrier=0 1 1
+/dev/xvdb  /home ext4    defaults,nosuid,nodev   0 2
+/dev/xvdc  /srv  ext4    defaults,nosuid,nodev   0 2
