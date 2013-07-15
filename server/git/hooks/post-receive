@@ -6,13 +6,15 @@
 # Author: Kaiwen Xu <kevin@kevxu.net>
 #
 
-NODE_PATH="$HOME/node/default/bin"
+NODE_PATH="/opt/node/default/bin"
 PATH="$PATH:$NODE_PATH"; export PATH
 MRT="$NODE_PATH/mrt"
 METEOR="$HOME/.meteor/meteor"
 ROOT="/srv/codebounty"
 DEST="$ROOT/repo"
-TMP="/local/codebounty/tmp"
+TMP="$HOME/tmp/codebounty"
+CHOWN="codebounty:codebounty"
+CHMOD="755"
 _GIT_DIR="$GIT_DIR"     # Backup GIT_DIR
 
 prep_for_bundle() {
@@ -113,48 +115,70 @@ prep_for_bundle() {
 }
 
 generate_bundle() {
+    echo "Start to generate meteor bundle..."
+
     if [ -d "$WORKING_DIR" ]; then
         echo >&2 "*** Temporary directory $WORKING_DIR already exists"
         echo >&2 "***  - bundle generation aborted"
         exit 2
     else
-        mkdir -p "$WORKING_DIR" \
-            || { echo >&2 "*** Failed to create $WORKING_DIR, aborting..."; clean_up; exit 2; }
+        mkdir -p "$WORKING_DIR" || log_failed "*** Failed to create $WORKING_DIR, aborting..."
     fi
 
-    git clone "$GIT_DIR" "$WORKING_DIR" \
-        || { echo >&2 "*** Clone failed, aborting..."; clean_up; exit 2; }
+    git clone "$GIT_DIR" "$WORKING_DIR" || log_failed "*** Clone failed, aborting..."
 
     echo "Checking out $rev..."
     # Unset GIT_DIR in order for git checkout to work
-    cd $WORKING_DIR && unset GIT_DIR && git checkout "$rev" \
-        || { echo >&2 "*** Checkout failed, aborting..."; clean_up; exit 2; }
-    # Restore GIT_DIR
-    GIT_DIR="$_GIT_DIR"
+    cd $WORKING_DIR && unset GIT_DIR && git checkout "$rev" || log_failed "*** Checkout failed, aborting..."
+    GIT_DIR="$_GIT_DIR" # Restore GIT_DIR
 
     echo "Generating meteor bundle..."
     rm -rf "$HOME/.npm" "$HOME/.meteorite" "$HOME/tmp/npm-*"    # Clean up cache
-    mkdir -p "$WORKING_DIR/$rev" \
-        || { echo >&2 "*** Fail to create $WORKING_DIR/$rev, aborting..."; clean_up; exit 2; }
+    mkdir -p "$WORKING_DIR/$rev" || log_failed "*** Fail to create $WORKING_DIR/$rev, aborting..."
     # Meteorite uses git, so have to unset GIT_DIR in order for it work
     cd "$WORKING_DIR/meteor" && unset GIT_DIR && "$MRT" install \
-        || { echo >&2 "*** Install meteorite package failed, aborting..."; clean_up; exit 2; }
+        || log_failed "*** Install meteorite package failed, aborting..."
     cd "$WORKING_DIR/meteor" && unset GIT_DIR && "$METEOR" bundle "$WORKING_DIR/$rev/bundle.tar.gz" \
-        || { echo >&2 "*** Generation failed, aborting..."; clean_up; exit 2; }
+        || log_failed "*** Generation failed, aborting..."
     GIT_DIR="$_GIT_DIR"
 
     echo "Extracting bundle..."
     tar xf "$WORKING_DIR/$rev/bundle.tar.gz" -C "$WORKING_DIR/$rev" \
-        || { echo >&2 "*** Extraction failed, aborting..."; clean_up; exit 2; }
+        || log_failed "*** Extraction failed, aborting..."
 
     if [ -d "$DEST/$rev" ]; then
         echo >&2 "*** Revision $rev already exists, aborting..."
         clean_up
         exit 1
     else
-        mv "$WORKING_DIR/$rev/bundle" "$DEST/$rev" \
-            || { echo >&2 "*** Failed to moving bundle into $DEST/$rev, aborting..."; clean_up; exit 2; }
+        sudo mv "$WORKING_DIR/$rev/bundle" "$DEST/$rev" \
+            || log_failed "*** Failed to moving bundle into $DEST/$rev, aborting..."
+        sudo chown -R "$CHOWN" "$DEST/$rev" && sudo chmod "$CHMOD" "$DEST/$rev" \
+            || log_failed "*** Failed to fix bundle permission on $DEST/$rev, aborting..."
     fi
+}
+
+deploy_testing() {
+    echo "Start to deploy testing server..."
+
+    REPO_TESTING="/srv/codebounty/testing"
+    INIT_SCRIPT_TEST="/etc/init.d/codebounty-test"
+
+    if [ ! -d "$DEST/$rev" ]; then
+        log_failed "*** $DEST/$rev not found, aborting"
+    fi
+
+    # Stop testing server
+    sudo "$INIT_SCRIPT_TEST" stop || log_failed "*** Failed to stop testing server, aborting..."
+
+    sudo rm -f "$REPO_TESTING"
+    sudo ln -s "$DEST/$rev" "$REPO_TESTING"
+    sudo chown -h "$CHOWN" "$REPO_TESTING" # Fix link permission
+
+    # Restart testing server
+    sudo "$INIT_SCRIPT_TEST" restart || log_failed "*** Failed to restart testing server, aborting..."
+
+    echo "$rev deployed to testing server"
 }
 
 clean_up() {
@@ -162,8 +186,14 @@ clean_up() {
     cd / && rm -rf "$WORKING_DIR"
 }
 
+log_failed() {
+    echo >&2 "$1"
+    clean_up
+    exit 2
+}
+
 finish() {
-    echo "Successfully generated $rev"
+    echo "Successfully created $rev"
 }
 
 # --- Main loop
@@ -175,5 +205,6 @@ do
     prep_for_bundle $oldrev $newrev $refname || continue
     generate_bundle
     clean_up
+    deploy_testing
     finish
 done
