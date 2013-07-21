@@ -12,6 +12,7 @@ Change configuration accordingly in `config.sh`.
 
 ## Generate new bundle
 
-1. In the working directory, `git remote add ec2 deploymentuser@app.codebounty.co:~/codebounty.git`
+1. In the working directory, `git remote add ec2 deploymentuser@app.codebounty.co:codebounty.git`
 2. `git push ec2 master`
 3. A new bundle of `refs/heads/master` will be automatically generated. (NOTICE: only changes to master branch will trigger generation and only one generation per push)
+4. New bundle will automatically be deployed to testing server. (x.codebounty.co)
