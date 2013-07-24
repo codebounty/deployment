@@ -23,7 +23,7 @@ SETTINGS_DEPLOY_FILE="settings.json"
 SETTINGS_TEST_FILE="settings-test.json"
 
 usage() {
-    echo >&2 "Usage: $ME deploy|test file"
+    echo >&2 "Usage: $ME [deploy|test] [file]"
     exit 3
 }
 

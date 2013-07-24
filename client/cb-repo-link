@@ -25,7 +25,7 @@ test_config_init_script_test
 set -e
 
 usage() {
-    echo >&2 "Usage: $ME deploy|test rev|latest"
+    echo >&2 "Usage: $ME [deploy|test] [rev|latest]"
     exit 3
 }
 
