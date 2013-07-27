@@ -1,4 +1,4 @@
-check process codebounty-test with pidfile /var/run/codebounty-test.pid
+check process node with pidfile /var/run/codebounty-test.pid
 	start program = "/etc/init.d/codebounty-test start"
 	stop program = "/etc/init.d/codebounty-test stop"
 
