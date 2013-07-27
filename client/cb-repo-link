@@ -15,16 +15,8 @@ usage() {
 # Check argument
 [ -z "$1" ] || [ -z "$2" ] && usage
 
-# Load and validate configurations
+# Load configurations
 . `dirname $0`/config.sh
-. `dirname $0`/config-test.sh
-test_config_ssh
-test_config_remote
-test_config_root
-test_config_repo
-test_config_admin_user
-test_config_init_script
-test_config_init_script_test
 
 # Load dependencies
 . `dirname $0`/lib/ssh.sh
@@ -34,12 +26,12 @@ set -e
 
 case "$1" in
     deploy)
-        REPO_LINK="$CB_REPO_DEPLOYED"
+        REPO_LINK="$CB_REPO_DEPLOY"
         RESTART_SERVER="cb_admin_restart_server"
         STOP_SERVER="cb_admin_stop_server"
         ;;
     test)
-        REPO_LINK="$CB_REPO_TESTING"
+        REPO_LINK="$CB_REPO_TEST"
         RESTART_SERVER="cb_admin_restart_test_server"
         STOP_SERVER="cb_admin_stop_test_server"
         ;;

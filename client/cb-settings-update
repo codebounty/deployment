@@ -15,10 +15,8 @@ usage() {
 # Check argument
 [ -z "$1" ] || [ -z "$2" ] && usage
 
-# Load and validate configurations
+# Load configurations
 . `dirname $0`/config.sh
-. `dirname $0`/config-test.sh
-test_config_all
 
 # Load dependencies
 . `dirname $0`/lib/ssh.sh
