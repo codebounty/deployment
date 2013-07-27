@@ -6,7 +6,7 @@ CB_SCP="/usr/bin/scp"
 
 # Server side settings
 CB_REMOTE="app.codebounty.co"
-CB_REMOTE_TES="x.codebounty.co"
+CB_REMOTE_TEST="x.codebounty.co"
 CB_SSH_PORT="22"
 CB_USER="codebounty"
 CB_GROUP="$CB_USER"                             # Group CB_USER belongs to, usually same as CB_USER. Used for chown.

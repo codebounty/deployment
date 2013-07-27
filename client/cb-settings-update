@@ -34,6 +34,7 @@ case "$1" in
         RESTART_SERVER="cb_admin_restart_server"
         ;;
     test)
+        CB_REMOTE="$CB_REMOTE_TEST"
         SETTINGS_FILE="$SETTINGS_TEST_FILE"
         RESTART_SERVER="cb_admin_restart_test_server"
         ;;

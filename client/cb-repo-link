@@ -31,6 +31,7 @@ case "$1" in
         STOP_SERVER="cb_admin_stop_server"
         ;;
     test)
+        CB_REMOTE="$CB_REMOTE_TEST"
         REPO_LINK="$CB_REPO_TEST"
         RESTART_SERVER="cb_admin_restart_test_server"
         STOP_SERVER="cb_admin_stop_test_server"
