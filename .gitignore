@@ -3,5 +3,7 @@
 
 # Private files
 server/etc/nginx/conf/codebounty-x-allowlist.conf
+server/etc/nginx/conf/ssl-app.key.secure
 server/etc/nginx/conf/ssl-app.key
+server/etc/nginx/conf/ssl-x.key.secure
 server/etc/nginx/conf/ssl-x.key
