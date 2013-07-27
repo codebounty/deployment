@@ -7,6 +7,14 @@
 # Usage: cb-settings-update file
 #
 
+usage() {
+    echo >&2 "Usage: $ME [deploy|test] [file]"
+    exit 3
+}
+
+# Check argument
+[ -z "$1" ] || [ -z "$2" ] && usage
+
 # Load and validate configurations
 . `dirname $0`/config.sh
 . `dirname $0`/config-test.sh
@@ -22,13 +30,6 @@ set -e
 SETTINGS_DEPLOY_FILE="settings.json"
 SETTINGS_TEST_FILE="settings-test.json"
 
-usage() {
-    echo >&2 "Usage: $ME [deploy|test] [file]"
-    exit 3
-}
-
-# Check argument
-[ -z "$1" ] || [ -z "$2" ] && usage
 case "$1" in
     deploy)
         SETTINGS_FILE="$SETTINGS_DEPLOY_FILE"
@@ -42,6 +43,7 @@ case "$1" in
         usage
         ;;
 esac
+
 [ ! -f "$2" ] && { echo >&2 "$ME: $2 not found"; exit 2; }
 
 SETTINGS_PATH="$CB_ROOT/$SETTINGS_FILE"
