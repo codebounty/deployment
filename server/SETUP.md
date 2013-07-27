@@ -66,28 +66,9 @@ apt-get update && apt-get -y upgrade
 # Configure timezone
 dpkg-reconfigure tzdata
 
-# Configure filesystem and reboot
-fdisk /dev/xvdd
-# Create primary partition 1, size +380G
-# Create primary partition 2, size +10G
-# Create primary partition 3, use rest of the space
-# Change partition 3 to type 82 (Linux swap)
-# Write changes
-
-mkfs.ext4 /dev/xvdd1
-
-mkfs.ext4 /dev/xvdd2
-
-mkswap /dev/xvdd3
-
-mkdir /local
-
 cat << EOF >> /etc/fstab
 /dev/xvdb   /home   ext4    defaults,nosuid,nodev   0 2
 /dev/xvdc   /srv    ext4    defaults,nosuid,nodev   0 2
-/dev/xvdd1  /local  ext4    defaults,nosuid,nodev   0 0
-/dev/xvdd2  /tmp    ext4    defaults,nosuid,nodev,noexec 0 0
-/dev/xvdd3  none    swap    sw 0 0
 EOF
 
 reboot
@@ -118,21 +99,19 @@ apt-key add /tmp/nginx_signing.key && rm -f /tmp/nginx_signing.key
 apt-get update && apt-get -y install nginx
 
 # Add users
-useradd bitcoind -d /home/bitcoind -r -s /bin/false -U
+useradd bitcoind -d /home/bitcoind -r -s /bin/false -U -m
 
-useradd bitcoind-test -d /home/bitcoind-test -r -s /bin/false -U
+useradd bitcoind-test -d /home/bitcoind-test -r -s /bin/false -U -m
 
-useradd codebounty -d /home/codebounty -s /bin/bash -U
+useradd codebounty -d /home/codebounty -s /bin/bash -U -m
+
+useradd deploymentuser -d /home/deploymentuser -s /bin/bash -U -m
 
 chown -R bitcoind:bitcoind /home/bitcoind
 
 chown -R bitcoind-test:bitcoind-test /home/bitcoind-test
 
-mkdir -p /local/codebounty/tmp
-
-chown -R codebounty:codebounty /home/codebounty /srv/codebounty /local/codebounty
-
-chmod 700 /local/codebounty
+chown -R codebounty:codebounty /home/codebounty /srv/codebounty
 
 # Configure GRUB
 # Copy /etc/default/grub into server
