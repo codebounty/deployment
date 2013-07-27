@@ -1,0 +1,1 @@
+deploymentuser ALL=(ALL) NOPASSWD:ALL

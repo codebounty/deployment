@@ -158,6 +158,29 @@ generate_bundle() {
     fi
 }
 
+deploy_testing() {
+    echo "Start to deploy testing server..."
+
+    REPO_TESTING="/srv/codebounty/testing"
+    INIT_SCRIPT_TEST="/etc/init.d/codebounty-test"
+
+    if [ ! -d "$DEST/$rev" ]; then
+        log_failed "*** $DEST/$rev not found, aborting"
+    fi
+
+    # Stop testing server
+    sudo "$INIT_SCRIPT_TEST" stop || log_failed "*** Failed to stop testing server, aborting..."
+
+    sudo rm -f "$REPO_TESTING"
+    sudo ln -s "$DEST/$rev" "$REPO_TESTING"
+    sudo chown -h "$CHOWN" "$REPO_TESTING" # Fix link permission
+
+    # Restart testing server
+    sudo "$INIT_SCRIPT_TEST" restart || log_failed "*** Failed to restart testing server, aborting..."
+
+    echo "$rev deployed to testing server"
+}
+
 clean_up() {
     echo "Cleaning up..."
     cd / && rm -rf "$WORKING_DIR"
@@ -182,5 +205,6 @@ do
     prep_for_bundle $oldrev $newrev $refname || continue
     generate_bundle
     clean_up
+    deploy_testing
     finish
 done
