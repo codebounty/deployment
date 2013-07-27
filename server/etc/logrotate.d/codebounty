@@ -1,9 +1,9 @@
 /var/log/codebounty/*.log {
 	monthly
-        missingok
-        rotate 100
+	missingok
+	rotate 100
 	maxsize 512000
-        compress
-        delaycompress
-        create 640 codebounty codebounty
+	compress
+	delaycompress
+	create 640 codebounty codebounty
 }
