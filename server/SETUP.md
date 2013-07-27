@@ -186,6 +186,13 @@ update-rc.d bitcoind-test defaults
 
 update-rc.d codebounty-test defaults
 
+# Configure node-inspector
+# Copy /etc/init.d/node-inspector into server
+
+/etc/init.d/node-inspector start
+
+update-rc.d node-inspector defaults
+
 # Configure monit
 # Copy /etc/monit into server (merge folder, don't overwrite)
 
