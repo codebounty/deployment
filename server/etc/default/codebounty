@@ -2,4 +2,3 @@ export PORT=8000
 export ROOT_URL="https://app.codebounty.co/"
 export MONGO_URL=""
 export METEOR_SETTINGS=`cat /srv/codebounty/settings.json`
-export MAIL_URL=""

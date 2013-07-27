@@ -10,7 +10,7 @@
 ### END INIT INFO
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:/opt/node/default/bin
-DAEMON_ARGS="/srv/codebounty/testing/main.js"
+DAEMON_ARGS="--debug /srv/codebounty/testing/main.js"
 DESC="codebounty testing server"
 NODEUSER=codebounty:codebounty
 LOCAL_VAR_RUN=/var/run
