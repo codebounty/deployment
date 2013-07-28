@@ -176,7 +176,7 @@ deploy_testing() {
     sudo chown -h "$CHOWN" "$REPO_TESTING" # Fix link permission
 
     # Restart testing server
-    sudo "$INIT_SCRIPT_TEST" restart || log_failed "*** Failed to restart testing server, aborting..."
+    sudo "$INIT_SCRIPT_TEST" start || log_failed "*** Failed to restart testing server, aborting..."
 
     echo "$rev deployed to testing server"
 }
