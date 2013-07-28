@@ -4,16 +4,8 @@
 #
 # Author: Kaiwen Xu <kevin@kevxu.net>
 #
-# Usage: cb-repo-link deploy|test rev|latest
+# Usage: cb-repo-link [dist|qa] [rev|latest]
 #
-
-usage() {
-    echo >&2 "Usage: $ME [deploy|test] [rev|latest]"
-    exit 3
-}
-
-# Check argument
-[ -z "$1" ] || [ -z "$2" ] && usage
 
 # Load configurations
 . `dirname $0`/config.sh
@@ -22,15 +14,23 @@ usage() {
 . `dirname $0`/lib/ssh.sh
 . `dirname $0`/lib/admin.sh
 
+usage() {
+    echo >&2 "Usage: $ME [dist|qa] [rev|latest]"
+    exit 3
+}
+
+# Check argument
+[ -z "$1" ] || [ -z "$2" ] && usage
+
 set -e
 
 case "$1" in
-    deploy)
+    dist)
         REPO_LINK="$CB_REPO_DEPLOY"
         RESTART_SERVER="cb_admin_restart_server"
         STOP_SERVER="cb_admin_stop_server"
         ;;
-    test)
+    qa)
         CB_REMOTE="$CB_REMOTE_TEST"
         REPO_LINK="$CB_REPO_TEST"
         RESTART_SERVER="cb_admin_restart_test_server"

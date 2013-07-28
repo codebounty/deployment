@@ -4,16 +4,8 @@
 #
 # Author: Kaiwen Xu <kevin@kevxu.net>
 #
-# Usage: cb-settings-update file
+# Usage: cb-settings-update [dist|qa] [file]
 #
-
-usage() {
-    echo >&2 "Usage: $ME [deploy|test] [file]"
-    exit 3
-}
-
-# Check argument
-[ -z "$1" ] || [ -z "$2" ] && usage
 
 # Load configurations
 . `dirname $0`/config.sh
@@ -23,17 +15,25 @@ usage() {
 . `dirname $0`/lib/admin.sh
 . `dirname $0`/lib/file.sh
 
+usage() {
+    echo >&2 "Usage: $ME [dist|qa] [file]"
+    exit 3
+}
+
+# Check argument
+[ -z "$1" ] || [ -z "$2" ] && usage
+
 set -e
 
 SETTINGS_DEPLOY_FILE="settings.json"
 SETTINGS_TEST_FILE="settings-test.json"
 
 case "$1" in
-    deploy)
+    dist)
         SETTINGS_FILE="$SETTINGS_DEPLOY_FILE"
         RESTART_SERVER="cb_admin_restart_server"
         ;;
-    test)
+    qa)
         CB_REMOTE="$CB_REMOTE_TEST"
         SETTINGS_FILE="$SETTINGS_TEST_FILE"
         RESTART_SERVER="cb_admin_restart_test_server"
