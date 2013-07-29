@@ -47,7 +47,7 @@ case "$2" in
         rev=$(cb_ssh_verbose "ls" "-t" "$CB_REPO" | sed -n 1p)
         ;;
     *)
-        rev="$1"
+        rev="$2"
         ;;
 esac
 
