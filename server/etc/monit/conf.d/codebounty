@@ -1,8 +1,0 @@
-check process node with pidfile /var/run/codebounty.pid
-	start program = "/etc/init.d/codebounty start"
-	stop program = "/etc/init.d/codebounty stop"
-
-	if failed port 8000 protocol HTTP
-		request /
-		with timeout 10 seconds
-		then restart
