@@ -1,9 +1,9 @@
-/var/log/codebounty/*.log {
+/var/log/clabot/*.log {
 	monthly
 	missingok
 	rotate 100
 	maxsize 512000
 	compress
 	delaycompress
-	create 640 codebounty codebounty
+	create 640 clabot clabot
 }
