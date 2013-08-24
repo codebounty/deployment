@@ -107,11 +107,21 @@ useradd codebounty -d /home/codebounty -s /bin/bash -U -m
 
 useradd deploymentuser -d /home/deploymentuser -s /bin/bash -U -m
 
+useradd clabot -d /home/clabot -s /bin/bash -U -m
+
 chown -R bitcoind:bitcoind /home/bitcoind
 
 chown -R bitcoind-test:bitcoind-test /home/bitcoind-test
 
 chown -R codebounty:codebounty /home/codebounty /srv/codebounty
+
+chown -R clabot:clabot /home/clabot /srv/clabot
+
+chmod 700 /home/bitcoind /home/bitcoind-test /home/codebounty /home/codebounty-test /home/clabot
+
+chmod 755 /home/deploymentuser
+
+chmod 755 /srv/codebounty /srv/clabot
 
 # Configure GRUB
 # Copy /etc/default/grub into server
@@ -180,8 +190,21 @@ update-rc.d node-inspector defaults
 # Configure logrotate
 # Copy /etc/logrotate.d into server (merge folder, don't overwrite)
 
-# Miscellaneous
-chown nginx:admin /var/log/nginx/*.log && chmod 640 /var/log/nginx/*.log
+# Fix log permissions (if not correct)
+chown nginx:adm /var/log/nginx/*.log && chmod 640 /var/log/nginx/*.log
+
+# Setup clabot
+cd /srv/clabot
+
+/opt/node/default/bin/npm install clabot
+
+# Copy /srv/clabot/main.js into server
+
+chown -R clabot:clabot /srv/clabot
+
+# Copy /etc/init.d/clabot into server
+
+update-rc.d clabot defaults
 
 # Reboot server to test if everything works
 reboot

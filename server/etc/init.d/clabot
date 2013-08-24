@@ -1,25 +1,25 @@
 #! /bin/bash
 
 ### BEGIN INIT INFO
-# Provides:          codebounty
-# Required-Start:    $remote_fs $named $network $syslog bitcoind
+# Provides:          clabot
+# Required-Start:    $remote_fs $named $network $syslog
 # Required-Stop:     $remote_fs $named $network $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: codebounty server
+# Short-Description: clabot server
 ### END INIT INFO
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:/opt/node/default/bin
-HOME=/home/codebounty
-MAIN_SCRIPT="/srv/codebounty/deployed/main.js"
+HOME=/home/clabot
+MAIN_SCRIPT="/srv/clabot/main.js"
 DAEMON_ARGS="/opt/node/default/bin/forever --plain -c '/opt/node/default/bin/node' $MAIN_SCRIPT"
-DESC="codebounty server"
-NODEUSER=codebounty:codebounty
+DESC="clabot server"
+NODEUSER=clabot:clabot
 LOCAL_VAR_RUN=/var/run
 CHDIR="/srv/codebounty/deployed"
 NAME=node
 DAEMON=/opt/node/default/bin/$NAME
-LOGFILE=/var/log/codebounty/codebounty.log
+LOGFILE=/var/log/clabot/clabot.log
 LOGPERM=0640
 
 
@@ -100,7 +100,7 @@ do_stop()
 	# sleep for some time.
 	# start-stop-daemon --stop --quiet --oknodo --retry=0/3/KILL/5 --pidfile $PIDFILE \
 	# 	--chuid $NODEUSER --exec $DAEMON -- $DAEMON_ARGS
-	sudo -u codebounty PATH=$PATH:/opt/node/default/bin HOME=/home/codebounty /opt/node/default/bin/forever stop $MAIN_SCRIPT
+	sudo -u clabot PATH=$PATH:/opt/node/default/bin HOME=/home/clabot /opt/node/default/bin/forever stop $MAIN_SCRIPT
 	[ "$?" = 2 ] && return 2
 	# Many daemons don't delete their pidfiles when they exit.
 	rm -f $PIDFILE
