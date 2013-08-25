@@ -5,6 +5,9 @@
 server/etc/nginx/conf/ssl-app.key.secure
 server/etc/nginx/conf/ssl-app.key
 
+server/etc/nginx/conf/ssl-contribute.key.secure
+server/etc/nginx/conf/ssl-contribute.key
+
 server-test/etc/nginx/conf/codebounty-x-allowlist.conf
 server-test/etc/nginx/conf/ssl-x.key.secure
 server-test/etc/nginx/conf/ssl-x.key
